@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Responsive Layout with Ads</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .box {
+        border: 1px solid black;
+        padding: 10px;
+    }
+
+    .ad {
+        width: 300px;
+        height: 250px;
+        background: lightblue;
+        padding: 20px;
+        text-align: center;
+        font-size: 18px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .header {
+        width: 100%;
+        max-width: 728px;
+        height: auto;
+        aspect-ratio: 728 / 90;
+        border: 1px solid black;
+        margin: 10px auto;
+        text-align: center;
+        line-height: 1;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+        .header {
+            width: 100%;
+            max-width: 100%;
+            font-size: 18px;
+        }
+    }
+
+    .center {
+        text-align: center;
+        margin: 20px;
+    }
+
+    .click-button {
+        font-size: 20px;
+        font-weight: bold;
+        padding: 10px 20px;
+        border: none;
+        cursor: pointer;
+        background-color: #007bff;
+        color: white;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+    }
+
+    .click-button:hover {
+        background-color: #0056b3;
+    }
+
+    .countdown-container {
+        display: inline-block;
+        margin-left: 20px;
+        vertical-align: top;
+    }
+
+    .countdown {
+        font-size: 20px;
+        font-weight: bold;
+        margin-top: 10px;
+    }
+
+    #errorMessage {
+        color: red;
+        margin-top: 10px;
+    }
+</style>
+</head>
+<body>
+<div class="header">Header Box</div>
+<div class="container">
+    <div class="ad">Ad 1</div>
+    <div class="ad">Ad 2</div>
+    <div class="ad">Ad 3</div>
+    <div class="ad">Ad 4</div>
+    <div class="ad">Ad 5</div>
+    <div class="ad">Ad 6</div>
+    <div class="ad">Ad 7</div>
+    <div class="ad">Ad 8</div>
+</div>
+
+<div class="center">
+    <button class="click-button" onclick="openLinks()">Click Here</button>
+    <div class="countdown-container">
+        <div id="countdown" class="countdown"></div>
+        <div id="errorMessage"></div>
+    </div>
+</div>
+
+<script>
+    function openLinks() {
+        const width = window.innerWidth * 0.5;
+        const height = window.innerHeight * 0.5;
+        const features = `width=${width},height=${height},resizable,scrollbars`;
+
+        const adsterraWindow = window.open('https://www.adsterra.com', '_blank', features);
+        const secondWindow = window.open('https://www.example.com/second-link', '_blank', features);
+        const thirdWindow = window.open('https://www.example.com/third-link', '_blank', features);
+
+        if (!adsterraWindow || !secondWindow || !thirdWindow) {
+            document.getElementById('errorMessage').textContent = "Could not open one or more windows. Please ensure pop-up blocking is disabled.";
+            return;
+        }
+
+        let countdown = 20;
+        const countdownDisplay = document.getElementById('countdown');
+
+        const interval = setInterval(function() {
+            if (adsterraWindow.closed || secondWindow.closed || thirdWindow.closed) {
+                clearInterval(interval);
+                countdownDisplay.textContent = "One of the windows was closed. Countdown stopped.";
+                return;
+            }
+
+            countdown--;
+
+            countdownDisplay.textContent = `Re-opening second link in ${countdown} seconds...`;
+
+            if (countdown <= 0) {
+                try {
+                    const secondWindowRepeat = window.open('https://www.example.com/second-link', '_blank', features);
+                    if (!secondWindowRepeat) {
+                        document.getElementById('errorMessage').textContent = "Could not re-open the second window. Check pop-up blockers.";
+                    } else {
+                        countdownDisplay.textContent = "Second link re-opened.";
+                    }
+                } catch (e) {
+                    console.error("Error while re-opening the second window:", e);
+                }
+
+                clearInterval(interval);
+            }
+        }, 1000);
+    }
+</script>
+</body>
+</html>
